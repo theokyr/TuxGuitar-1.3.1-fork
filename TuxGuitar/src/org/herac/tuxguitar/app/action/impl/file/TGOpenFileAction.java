@@ -1,0 +1,56 @@
+package org.herac.tuxguitar.app.action.impl.file;
+
+import java.io.File;
+import java.net.URL;
+import java.util.List;
+
+import org.herac.tuxguitar.action.TGActionContext;
+import org.herac.tuxguitar.action.TGActionException;
+import org.herac.tuxguitar.action.TGActionManager;
+import org.herac.tuxguitar.app.document.TGDocumentFileManager;
+import org.herac.tuxguitar.app.view.dialog.file.TGFileChooserHandler;
+import org.herac.tuxguitar.editor.action.TGActionBase;
+import org.herac.tuxguitar.io.base.TGFileFormat;
+import org.herac.tuxguitar.io.base.TGFileFormatManager;
+import org.herac.tuxguitar.util.TGContext;
+
+public class TGOpenFileAction extends TGActionBase {
+	
+	public static final String NAME = "action.file.open";
+	
+	public TGOpenFileAction(TGContext context) {
+		super(context, NAME);
+	}
+	
+	protected void processAction(final TGActionContext context){
+		List<TGFileFormat> fileFormats = TGFileFormatManager.getInstance(getContext()).getInputFormats();
+		TGDocumentFileManager tgDocumentFileManager = TGDocumentFileManager.getInstance(getContext());
+		tgDocumentFileManager.chooseFileNameForOpen(fileFormats, new TGFileChooserHandler() {
+			public void updateFileName(final String fileName) {
+				final URL url = createUrl(fileName);
+				if( url != null ) {
+					new Thread(new Runnable() {
+						public void run() {
+							context.setAttribute(TGReadURLAction.ATTRIBUTE_URL, url);
+							
+							TGActionManager tgActionManager = TGActionManager.getInstance(getContext());
+							tgActionManager.execute(TGReadURLAction.NAME, context);
+						}
+					}).start();
+				}
+			}
+		});
+	}
+	
+	public URL createUrl(String fileName) {
+		try {
+			File file = new File(fileName);
+			if( file.exists() && file.isFile() ){
+				return file.toURI().toURL();
+			}
+			return null;
+		} catch (Throwable e) {
+			throw new TGActionException(e.getMessage(), e);
+		}
+	}
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="copy-files"  >
+<target name="copy-files">
+  <copy todir="C:\Users\theo\Documents\GitHub\TuxGuitar-1.3.1-fork\build-scripts\tuxguitar-windows-x86\target/tuxguitar-1.3.1-SNAPSHOT-windows-x86/share" overwrite="true">
+    <fileset dir="../..//TuxGuitar/share/"/>
+  </copy>
+  <copy todir="C:\Users\theo\Documents\GitHub\TuxGuitar-1.3.1-fork\build-scripts\tuxguitar-windows-x86\target/tuxguitar-1.3.1-SNAPSHOT-windows-x86/doc" overwrite="true">
+    <fileset dir="../..//TuxGuitar/doc/"/>
+  </copy>
+  <copy todir="C:\Users\theo\Documents\GitHub\TuxGuitar-1.3.1-fork\build-scripts\tuxguitar-windows-x86\target/tuxguitar-1.3.1-SNAPSHOT-windows-x86/dist" overwrite="true">
+    <fileset dir="../..//TuxGuitar/dist/"/>
+  </copy>
+  <copy todir="C:\Users\theo\Documents\GitHub\TuxGuitar-1.3.1-fork\build-scripts\tuxguitar-windows-x86\target/tuxguitar-1.3.1-SNAPSHOT-windows-x86/share/soundfont" overwrite="true">
+    <fileset dir="../..//TuxGuitar-resources/resources/soundfont"/>
+  </copy>
+  <copy todir="C:\Users\theo\Documents\GitHub\TuxGuitar-1.3.1-fork\build-scripts\tuxguitar-windows-x86\target/tuxguitar-1.3.1-SNAPSHOT-windows-x86" overwrite="true">
+    <fileset dir="../common-resources/common"/>
+  </copy>
+  <copy todir="C:\Users\theo\Documents\GitHub\TuxGuitar-1.3.1-fork\build-scripts\tuxguitar-windows-x86\target/tuxguitar-1.3.1-SNAPSHOT-windows-x86" overwrite="true">
+    <fileset dir="../common-resources/common-windows"/>
+  </copy>
+</target>
+</project>
