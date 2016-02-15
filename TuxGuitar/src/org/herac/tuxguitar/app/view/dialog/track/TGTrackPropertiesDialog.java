@@ -66,6 +66,7 @@ public class TGTrackPropertiesDialog implements TGEventListener {
 	private Spinner stringCountSpinner;
 	private Combo[] stringCombos = new Combo[MAX_STRINGS];
 	private Combo offsetCombo;
+	private Combo tuningCombo;
 	private int stringCount;
 	private Combo instrumentCombo;
 	private Color colorButtonValue;
@@ -217,7 +218,30 @@ public class TGTrackPropertiesDialog implements TGEventListener {
 			this.stringCombos[i] = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
 			this.stringCombos[i].setItems(tuningTexts);
 		}
+                
+                
 	}
+        
+        public void changeTuning(int offset, boolean drop)
+        {
+                //Standard tuning, starting from e to E)
+                int tuning[] = {64,59,55,50,45,40,33};
+                int dropPenalty = 2;
+                
+                for (int i=0 ; i<this.stringCombos.length-1; i++)
+                {
+                    this.stringCombos[i].select(tuning[i] - offset);
+                }
+                if (drop)
+                {
+                    //TERRIBLE WAY DONT DO THIS PLS THINK OF THE CHILDREN
+                    this.stringCombos[5].select(tuning[5] - offset - dropPenalty);
+                }
+                else
+                {
+                    this.stringCombos[this.stringCombos.length-1].select(tuning[this.stringCombos.length-1] - offset);
+                }
+        }
 	
 	private void initTuningData(Composite parent,TGTrack track) {
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -253,6 +277,35 @@ public class TGTrackPropertiesDialog implements TGEventListener {
 				updateTuningGroup(!TGTrackPropertiesDialog.this.percussionChannel);
 			}
 		});
+                
+                //---------------------------------TUNING--------------------------------
+		Label tuningLabel = new Label(middle, SWT.NONE);
+		tuningLabel.setText("Tuning :");
+		tuningLabel.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER,true,true));
+                
+                
+                this.tuningCombo = new Combo(middle, SWT.DROP_DOWN | SWT.READ_ONLY);
+		this.tuningCombo.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,true));
+		this.tuningCombo.add("E Standard");
+		this.tuningCombo.add("Drop D");
+		this.tuningCombo.add("D# Standard");
+		this.tuningCombo.add("Drop C#");
+		this.tuningCombo.add("D Standard");
+		this.tuningCombo.add("Drop C");
+		this.tuningCombo.add("C# Standard");
+		this.tuningCombo.add("Drop B");
+		this.tuningCombo.add("C Standard");
+		this.tuningCombo.add("Drop A#");
+                this.tuningCombo.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e)
+                        {
+                            int offset = TGTrackPropertiesDialog.this.tuningCombo.getSelectionIndex() / 2 ;
+                            boolean drop = ( TGTrackPropertiesDialog.this.tuningCombo.getSelectionIndex() % 2 == 1);
+                            changeTuning(offset, drop);
+			}
+		});
+                
+                
 		
 		//---------------------------------OFFSET--------------------------------
 		Label offsetLabel = new Label(middle, SWT.NONE);
@@ -267,6 +320,8 @@ public class TGTrackPropertiesDialog implements TGEventListener {
 				this.offsetCombo.select(i - TGTrack.MIN_OFFSET);
 			}
 		}
+		
+		
 		
 		//---------------------------------OPTIONS----------------------------------
 		this.stringTransposition = new Button( bottom , SWT.CHECK );

@@ -11,6 +11,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.herac.tuxguitar.app.TuxGuitar;
 import org.herac.tuxguitar.app.action.TGActionProcessorListener;
@@ -42,7 +43,8 @@ public class TGToolBarSectionDuration implements TGToolBarSection {
 	private Map<Integer, String> durationActions;
 	
 	private Integer durationValue;
-	
+        private ToolItem durationItems[];
+        
 	public TGToolBarSectionDuration() {
 		this.createDurationNames();
 		this.createDurationActions();
@@ -71,8 +73,23 @@ public class TGToolBarSectionDuration implements TGToolBarSection {
 		
 		this.loadIcons(toolBar);
 		this.loadProperties(toolBar);
+                
+		this.durationItems = new ToolItem[7];
+                
+		TGDuration duration = toolBar.getTablature().getCaret().getDuration();
+		boolean running = TuxGuitar.getInstance().getPlayer().isRunning();
+                
+		this.createDurationRadio(toolBar, durationItems[0], TGDuration.WHOLE, duration.getValue(), running);
+		this.createDurationRadio(toolBar, durationItems[1], TGDuration.HALF, duration.getValue(), running);
+		this.createDurationRadio(toolBar, durationItems[2], TGDuration.QUARTER, duration.getValue(), running);
+		this.createDurationRadio(toolBar, durationItems[3], TGDuration.EIGHTH, duration.getValue(), running);
+		this.createDurationRadio(toolBar, durationItems[4], TGDuration.SIXTEENTH, duration.getValue(), running);
+		this.createDurationRadio(toolBar, durationItems[5], TGDuration.THIRTY_SECOND, duration.getValue(), running);
+		this.createDurationRadio(toolBar, durationItems[6], TGDuration.SIXTY_FOURTH, duration.getValue(), running);
 	}
-	
+        
+        
+        
 	public void loadProperties(TGToolBar toolBar){
 		this.durationItem.setToolTipText(toolBar.getText("duration"));
 		this.dotted.setToolTipText(toolBar.getText("duration.dotted"));
@@ -107,6 +124,8 @@ public class TGToolBarSectionDuration implements TGToolBarSection {
 	public void updateItems(TGToolBar toolBar) {
 		TGDuration duration = toolBar.getTablature().getCaret().getDuration();
 		boolean running = TuxGuitar.getInstance().getPlayer().isRunning();
+                
+                
 		
 		this.loadDurationIcon(toolBar, false);
 		this.durationItem.setEnabled( !running );
@@ -115,6 +134,15 @@ public class TGToolBarSectionDuration implements TGToolBarSection {
 		this.doubleDotted.setSelection(duration.isDoubleDotted());
 		this.doubleDotted.setEnabled(!running);
 		this.divisionTypeItem.setEnabled(!running);
+                
+                
+                //System.out.println(this.durationItems[0].isEnabled());
+                /*for(int i = 0;i < this.durationItems.length;i++)
+                {
+                        System.out.println(i);
+			this.durationItems[i].setEnabled(!running);
+		}*/
+                
 	}
 	
 	public void createDurationMenu(TGToolBar toolBar, ToolItem item) {
@@ -122,7 +150,6 @@ public class TGToolBarSectionDuration implements TGToolBarSection {
 		boolean running = TuxGuitar.getInstance().getPlayer().isRunning();
 		
 		Menu menu = new Menu(item.getParent().getShell());
-		
 		this.createDurationMenuItem(toolBar, menu, TGDuration.WHOLE, duration.getValue(), running);
 		this.createDurationMenuItem(toolBar, menu, TGDuration.HALF, duration.getValue(), running);
 		this.createDurationMenuItem(toolBar, menu, TGDuration.QUARTER, duration.getValue(), running);
@@ -138,6 +165,21 @@ public class TGToolBarSectionDuration implements TGToolBarSection {
 		menu.setVisible(true);
 	}
 	
+        
+        private void createDurationRadio(final TGToolBar toolBar, ToolItem item, int value, int selection, boolean running)
+        {
+		Image icon = this.findDurationIcon(toolBar, value);
+		String action = this.findDurationAction(value);
+		String nameKey = this.findDurationNameKey(value);
+                if( icon != null && action != null && nameKey != null ) {
+                        item = new ToolItem(toolBar.getControl(), SWT.RADIO);
+			item.setEnabled(!running);
+			item.addSelectionListener(toolBar.createActionProcessor(action));
+			//item.setText(toolBar.getText(nameKey, (value == selection)));
+			item.setImage(icon);
+		}
+	}
+        
 	private void createDurationMenuItem(TGToolBar toolBar, Menu menu, int value, int selection, boolean running) {
 		Image icon = this.findDurationIcon(toolBar, value);
 		String action = this.findDurationAction(value);

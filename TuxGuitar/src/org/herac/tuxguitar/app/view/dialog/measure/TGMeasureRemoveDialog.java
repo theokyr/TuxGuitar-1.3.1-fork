@@ -66,22 +66,22 @@ public class TGMeasureRemoveDialog {
 				int fromSelection = fromSpinner.getSelection();
 				int toSelection = toSpinner.getSelection();
 				
-				if(fromSelection < minSelection){
+				/*if(fromSelection < minSelection){
 					fromSpinner.setSelection(minSelection);
 				}else if(fromSelection > toSelection){
 					fromSpinner.setSelection(toSelection);
-				}
+				}*/
 			}
 		});
 		toSpinner.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				int toSelection = toSpinner.getSelection();
 				int fromSelection = fromSpinner.getSelection();
-				if(toSelection < fromSelection){
+				/*if(toSelection < fromSelection){
 					toSpinner.setSelection(fromSelection);
 				}else if(toSelection > maxSelection){
 					toSpinner.setSelection(maxSelection);
-				}
+				}*/
 			}
 		});
 		//------------------BUTTONS--------------------------
